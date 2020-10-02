@@ -7,11 +7,13 @@
     <version>6.8.0</version>
   </parent>
 
+  <groupId>com.davromalc</groupId>
   <artifactId>cucumber-micronaut</artifactId>
   <packaging>jar</packaging>
   <name>Cucumber-JVM: Micronaut</name>
 
   <properties>
+    <project.Automatic-Module-Name>io.cucumber.micronaut</project.Automatic-Module-Name>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <slf4j.version>1.6.6</slf4j.version>
     <logback.version>1.0.7</logback.version>
