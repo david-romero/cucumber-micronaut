@@ -26,7 +26,7 @@ class MicronautObjectFactoryTest {
     @Test
     void given_A_Bean_Registered_Into_Micronaut_Context_When_Cucumber_Gets_An_Instance_Then_The_Bean_Is_Returned() {
         // given
-        objectFactory.applicationContext.registerSingleton(MyBean.class);
+        objectFactory.applicationContext.registerSingleton(new MyBean());
 
         // when
         final MyBean myBean = objectFactory.getInstance(MyBean.class);
