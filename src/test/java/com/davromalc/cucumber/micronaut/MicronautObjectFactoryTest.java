@@ -1,5 +1,17 @@
 package com.davromalc.cucumber.micronaut;
 
+import com.davromalc.cucumber.micronaut.beans.ListToStringBasedParametrizesBean;
+import com.davromalc.cucumber.micronaut.beans.LongToStringBasedParametrizesBean;
+import com.davromalc.cucumber.micronaut.beans.MyBean;
+import com.davromalc.cucumber.micronaut.beans.MyBeanClient;
+import com.davromalc.cucumber.micronaut.beans.MyBeanImplementation;
+import com.davromalc.cucumber.micronaut.beans.MyBeanInterface;
+import com.davromalc.cucumber.micronaut.beans.MyBeanWithDependencies;
+import com.davromalc.cucumber.micronaut.beans.MyDecoratorBeanImplementation;
+import com.davromalc.cucumber.micronaut.beans.ParametrizedBean;
+import com.davromalc.cucumber.micronaut.beans.ParametrizesBeanClient;
+import com.davromalc.cucumber.micronaut.beans.ParametrizesListBeanClient;
+import com.davromalc.cucumber.micronaut.beans.StringBasedParametrizesBean;
 import io.micronaut.context.Qualifier;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import org.junit.jupiter.api.AfterEach;
@@ -8,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class MicronautObjectFactoryTest {
@@ -83,5 +97,29 @@ class MicronautObjectFactoryTest {
         Assertions.assertNotNull(myBean);
         Assertions.assertDoesNotThrow(myBean::main);
         Assertions.assertEquals(longToString, myBean.myBean);
+    }
+
+    @Test
+    void given_A_Bean_With_Sub_Parameter_Types_Registered_Into_Micronaut_Context_With_Named_When_Cucumber_Gets_An_Instance_Then_The_Desired_Bean_Is_Returned() {
+        // given
+        final Qualifier<ParametrizedBean> qualifierForString = Qualifiers.byType(String.class, String.class);
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, new StringBasedParametrizesBean(),
+            qualifierForString);
+        final Qualifier<ParametrizedBean> qualifierForLongToString = Qualifiers.byType(Long.class, String.class);
+        final ParametrizedBean<Long, String> longToString = new LongToStringBasedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, longToString,
+            qualifierForLongToString);
+        final Qualifier<ParametrizedBean> qualifierForListToString = Qualifiers.byType(List.class, String.class);
+        final ParametrizedBean<List<?>, String> listToString = new ListToStringBasedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, listToString,
+            qualifierForListToString);
+
+        // when
+        final ParametrizesListBeanClient myBean = objectFactory.getInstance(ParametrizesListBeanClient.class);
+
+        // then
+        Assertions.assertNotNull(myBean);
+        Assertions.assertDoesNotThrow(myBean::main);
+        Assertions.assertEquals(listToString, myBean.myBean);
     }
 }

@@ -1,10 +1,10 @@
-package com.davromalc.cucumber.micronaut;
+package com.davromalc.cucumber.micronaut.beans;
 
 import javax.inject.Named;
 
 public class MyBeanClient {
 
-    final MyBeanInterface bean;
+    public final MyBeanInterface bean;
 
     public MyBeanClient(@Named("myDecoratorBeanImplementation") MyBeanInterface bean) {
         this.bean = bean;

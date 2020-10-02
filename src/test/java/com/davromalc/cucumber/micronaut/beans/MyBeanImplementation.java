@@ -1,4 +1,4 @@
-package com.davromalc.cucumber.micronaut;
+package com.davromalc.cucumber.micronaut.beans;
 
 public class MyBeanImplementation implements MyBeanInterface {
 

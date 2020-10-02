@@ -48,14 +48,26 @@ public final class MicronautObjectFactory implements ObjectFactory {
 
     private <T> Object getParameterizedBean(Constructor<T> constructor, int index, Type parameterizedType)
             throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
+        final Class<?>[] typesClass = getTypes(parameterizedType);
+        return applicationContext.getBean(constructor.getParameterTypes()[index], Qualifiers.byType(typesClass));
+    }
+
+    private Class<?>[] getTypes(Type parameterizedType)
+            throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
         final Field field = parameterizedType.getClass().getDeclaredField("actualTypeArguments");
         field.setAccessible(true);
         Type[] types = (Type[]) field.get(parameterizedType);
         Class<?>[] typesClass = new Class[types.length];
         for (int indexType = 0; indexType < types.length; indexType++) {
-            typesClass[indexType] = Class.forName(types[indexType].getTypeName());
+            if (types[indexType] instanceof Class) {
+                typesClass[indexType] = Class.forName(types[indexType].getTypeName());
+            } else if (hasParameterType(types[indexType])) {
+                final Field rawType = types[indexType].getClass().getDeclaredField("rawType");
+                rawType.setAccessible(true);
+                typesClass[indexType] = (Class<?>) rawType.get(types[indexType]);
+            }
         }
-        return applicationContext.getBean(constructor.getParameterTypes()[index], Qualifiers.byType(typesClass));
+        return typesClass;
     }
 
     @Override
