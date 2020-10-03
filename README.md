@@ -4,6 +4,7 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
+[![Pull Request][pr-shield]][pr-url]
 [![Apache License][license-shield]][license-url]
 
 
@@ -195,7 +196,7 @@ public class AddFriendStep {
 
 
   @When("the friend is added")
-  public void theFriendIsAdded(String friendName) {
+  public void theFriendIsAdded() {
     addFriend.execute(world.getFriendParams());
   }
 
@@ -262,12 +263,13 @@ Project Link: [https://github.com/david-romero/cucumber-micronaut](https://githu
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
 [contributors-url]: https://github.com/david-romero/cucumber-micronaut/graphs/contributors
-[forks-shield]: https://github.com/david-romero/cucumber-micronaut.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/david-romero/cucumber-micronaut?style=flat-square
 [forks-url]: hhttps://github.com/david-romero/cucumber-micronaut/network/members
-[stars-shield]: https://github.com/david-romero/cucumber-micronaut.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/david-romero/cucumber-micronaut?style=flat-square
 [stars-url]: https://github.com/david-romero/cucumber-micronaut/stargazers
-[issues-shield]: hhttps://github.com/david-romero/cucumber-micronaut.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/david-romero/cucumber-micronaut?style=flat-square
 [issues-url]: https://github.com/david-romero/cucumber-micronaut/issues
-[license-shield]: https://github.com/david-romero/cucumber-micronaut.svg?style=flat-square
-[license-url]: https://github.com/david-romero/cucumber-micronaut/blob/master/LICENSE.txt
-[product-screenshot]: docs/images/screenshot.png
+[pr-shield]: https://img.shields.io/github/issues-pr/david-romero/cucumber-micronaut?style=flat-square
+[pr-url]: https://github.com/david-romero/cucumber-micronaut/pulls
+[license-shield]: https://img.shields.io/github/license/david-romero/cucumber-micronaut?style=flat-square
+[license-url]: https://github.com/david-romero/cucumber-micronaut/blob/master/LICENSE
