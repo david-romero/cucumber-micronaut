@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ParametrizesListBeanClient {
 
-    public final ParametrizedBean<List<?>, String> myBean;
+    public final ParametrizedBean<List<Long>, String> myBean;
 
-    public ParametrizesListBeanClient(ParametrizedBean<List<?>, String> myBean) {
+    public ParametrizesListBeanClient(ParametrizedBean<List<Long>, String> myBean) {
         this.myBean = myBean;
     }
 

@@ -6,8 +6,8 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.inject.qualifiers.Qualifiers;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public final class MicronautObjectFactory implements ObjectFactory {
@@ -34,37 +34,34 @@ public final class MicronautObjectFactory implements ObjectFactory {
             for (int index = 0; index < constructor.getParameters().length; index++) {
                 final Type parameterizedType = constructor.getParameters()[index].getParameterizedType();
                 if (hasParameterType(parameterizedType)) {
-                    parameters[index] = getParameterizedBean(constructor, index, parameterizedType);
+                    parameters[index] = getParameterizedBean(constructor, index, (ParameterizedType) parameterizedType);
                 } else {
                     parameters[index] = applicationContext.getBean(constructor.getParameterTypes()[index]);
                 }
             }
             return constructor.newInstance(parameters);
-        } catch (InstantiationException | IllegalStateException | InvocationTargetException | IllegalAccessException
-                | NoSuchFieldException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalStateException | InvocationTargetException
+                | IllegalAccessException e) {
             throw new CucumberException(String.format("Failed to instantiate %s", beanType), e);
         }
     }
 
-    private <T> Object getParameterizedBean(Constructor<T> constructor, int index, Type parameterizedType)
-            throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
-        final Class<?>[] typesClass = getTypes(parameterizedType);
-        return applicationContext.getBean(constructor.getParameterTypes()[index], Qualifiers.byType(typesClass));
+    private <T> Object getParameterizedBean(
+            Constructor<T> constructor, int index, ParameterizedType parameterizedType
+    ) {
+        return applicationContext.getBean(constructor.getParameterTypes()[index],
+            Qualifiers.byTypeArgumentsClosest(getTypes(parameterizedType)));
     }
 
-    private Class<?>[] getTypes(Type parameterizedType)
-            throws NoSuchFieldException, IllegalAccessException, ClassNotFoundException {
-        final Field field = parameterizedType.getClass().getDeclaredField("actualTypeArguments");
-        field.setAccessible(true);
-        Type[] types = (Type[]) field.get(parameterizedType);
-        Class<?>[] typesClass = new Class[types.length];
+    private Class<?>[] getTypes(ParameterizedType type) {
+        final Type[] types = type.getActualTypeArguments();
+        final Class<?>[] typesClass = new Class[types.length];
         for (int indexType = 0; indexType < types.length; indexType++) {
             if (types[indexType] instanceof Class) {
-                typesClass[indexType] = Class.forName(types[indexType].getTypeName());
-            } else if (hasParameterType(types[indexType])) {
-                final Field rawType = types[indexType].getClass().getDeclaredField("rawType");
-                rawType.setAccessible(true);
-                typesClass[indexType] = (Class<?>) rawType.get(types[indexType]);
+                typesClass[indexType] = (Class<?>) types[indexType];
+            } else if (types[indexType] instanceof ParameterizedType) {
+                ParameterizedType parameterizedType1 = (ParameterizedType) types[indexType];
+                typesClass[indexType] = (Class<?>) parameterizedType1.getRawType();
             }
         }
         return typesClass;
@@ -76,11 +73,6 @@ public final class MicronautObjectFactory implements ObjectFactory {
     }
 
     private boolean hasParameterType(Type type) {
-        try {
-            type.getClass().getDeclaredField("actualTypeArguments");
-            return true;
-        } catch (NoSuchFieldException e) {
-            return false;
-        }
+        return type instanceof ParameterizedType;
     }
 }
