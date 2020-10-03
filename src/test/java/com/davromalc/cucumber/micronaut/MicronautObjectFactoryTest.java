@@ -8,6 +8,8 @@ import com.davromalc.cucumber.micronaut.beans.MyBeanImplementation;
 import com.davromalc.cucumber.micronaut.beans.MyBeanInterface;
 import com.davromalc.cucumber.micronaut.beans.MyBeanWithDependencies;
 import com.davromalc.cucumber.micronaut.beans.MyDecoratorBeanImplementation;
+import com.davromalc.cucumber.micronaut.beans.NamedBeanClient;
+import com.davromalc.cucumber.micronaut.beans.NamedParametrizesBean;
 import com.davromalc.cucumber.micronaut.beans.ParametrizedBean;
 import com.davromalc.cucumber.micronaut.beans.ParametrizesBeanClient;
 import com.davromalc.cucumber.micronaut.beans.ParametrizesListBeanClient;
@@ -161,5 +163,42 @@ class MicronautObjectFactoryTest {
         Assertions.assertNotNull(myBean);
         Assertions.assertDoesNotThrow(myBean::main);
         Assertions.assertEquals(stringListToString, myBean.myBean);
+    }
+
+    @Test
+    void given_Two_Beans_With_The_Same_Types_When_Cucumber_Gets_An_Instance_By_Name_Then_The_Desired_Bean_Is_Returned() {
+        // given
+        final Qualifier<ParametrizedBean> qualifierForString = Qualifiers.byTypeArgumentsClosest(String.class,
+            String.class);
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, new StringBasedParametrizesBean(),
+            qualifierForString);
+        final Qualifier<ParametrizedBean> qualifierForLongToString = Qualifiers.byTypeArgumentsClosest(Long.class,
+            String.class);
+        final ParametrizedBean<Long, String> longToString = new LongToStringBasedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, longToString,
+            qualifierForLongToString);
+        final Qualifier<ParametrizedBean> qualifierForListToString = Qualifiers.byTypeArgumentsClosest(List.class,
+            String.class);
+        final ParametrizedBean<List<Long>, String> listToString = new LongListToStringBasedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, listToString,
+            qualifierForListToString);
+        final Qualifier<ParametrizedBean> qualifierForStringListToString = Qualifiers.byTypeArgumentsClosest(List.class,
+            String.class);
+        final ParametrizedBean<List<String>, String> stringListToString = new StringListToStringBasedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, stringListToString,
+            qualifierForStringListToString);
+        final Qualifier<ParametrizedBean> qualifierForStringListToStringWithName = Qualifiers
+                .byName("namedParametrizedBean");
+        final ParametrizedBean<List<String>, String> namedBean = new NamedParametrizesBean();
+        objectFactory.applicationContext.registerSingleton(ParametrizedBean.class, namedBean,
+            qualifierForStringListToStringWithName);
+
+        // when
+        final NamedBeanClient myBean = objectFactory.getInstance(NamedBeanClient.class);
+
+        // then
+        Assertions.assertNotNull(myBean);
+        Assertions.assertDoesNotThrow(myBean::main);
+        Assertions.assertEquals(namedBean, myBean.myBean);
     }
 }
