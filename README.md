@@ -112,7 +112,7 @@ Add the maven dependency
   <dependency>
     <groupId>com.davromalc</groupId>
     <artifactId>cucumber-micronaut</artifactId>
-    <version>6.8.0</version>
+    <version>0.1.0</version>
   </dependency>
 ```
 
