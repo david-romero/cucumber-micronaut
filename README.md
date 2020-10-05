@@ -10,23 +10,7 @@
 
 
 <!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <h3 align="center">Cucumber Micronaut</h3>
 
-  <p align="center">
-    
-    <br />
-    <a href="https://github.com/david-romero/cucumber-micronaut"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/david-romero/cucumber-micronaut">View Demo</a>
-    ·
-    <a href="https://github.com/david-romero/cucumber-micronaut/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/david-romero/cucumber-micronaut/issues">Request Feature</a>
-  </p>
-</p>
 
 
 
@@ -67,9 +51,9 @@ A lightweight library for using dependency injection in cucumber steps for Micro
 
 - Cucumber steps dependency injection using the Micronaut dependency injection mechanism. **Only constructor dependency injection is supported**
 
-- Bean discovering by type
-- Bean discovering by name. See micronaut @Named annotation usage.
-- Bean discovering by parameterized type
+- Bean discovery by type
+- Bean discovery by name. See micronaut @Named annotation usage.
+- Bean discovery by parameterized type
 
 
 ### Build
